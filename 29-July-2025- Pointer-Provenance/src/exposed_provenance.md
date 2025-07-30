@@ -13,4 +13,8 @@ So the programmer can deviate from strict provenance and dump a **provenance ins
 
 The problem is that there is no algorithm that decides which provenance will be fetched from the database. You can think of this as “guessing” the right provenance, and the guess will be “maximally in your favor”, in the sense that if there is any way to avoid undefined behavior, then that is the guess that will be taken.  
 
-Anyway, I do not know (forget everything I hae said)
+Anyway, I do not know (forget everything I have just said)  
+
+
+What?  
+It must have been the wind.  

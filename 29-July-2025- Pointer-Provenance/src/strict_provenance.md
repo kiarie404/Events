@@ -21,20 +21,19 @@ fn main(){
 }
 ```
 
-2. [`ptr::with_addr(self, x: usize) -> ptr`](https://doc.rust-lang.org/core/primitive.pointer.html#method.with_addr) creates a new pointer with a given address but retains the provenance of the original pointer.  
+2. [`ptr::with_addr(self, x: usize) -> ptr`](https://doc.rust-lang.org/core/primitive.pointer.html#method.with_addr) creates a new pointer with the given `usize` address AND copies the provenance of the original pointer to become the provenance of the newly created pointer.  
 ```rust
 fn main(){
  let mut x: [u32; 5] = [10, 20, 30, 40, 50];
 
- // getting the address of the array-base, we will use this for some time
- // this method creates a reference, so we will avoid it.  
- // we do not wish to mix references with pointers
+ // let's get the address of the array's base, we will use this for some time
  let base_address : usize = (&mut x[0] as *mut u32).addr();
 
- // Provenance of References is extracted automatically and is correct since references cannot be created from invalid memory...
+ // Provenance of References is created automatically and is always correct since references cannot be created from invalid memory...
  // However, aliasing references and raw pointers can eventually make a reference invalid.
+//  Let's look at references and raw-pointers that demonstrate strict-provenance sand-boxing nature..   
 
-  // pointer_1 (a reference)
+  // pointer_1 (a simple mut reference)
   // integer details --> This pointer points at the 0'th element address, ie. the base of the allocation
   // Provenance details
       //  set of affected addresses: [base, base+1, base+2, base+3, base+4]
@@ -42,7 +41,7 @@ fn main(){
       //  access rights : read-write each address
   let pointer_1 = &mut x[..]; 
 
-  // pointer_2 (a raw pointer derived from a reference)
+  // pointer_2 (a raw pointer derived from a mut reference)
   // integer details --> This pointer points at the 0'th element address, ie. the base of the allocation
   // Provenance details
       //  set of affected addresses: [base, base+1, base+2, base+3, base+4]
@@ -50,16 +49,16 @@ fn main(){
       //  access rights : read-write each address
   let pointer_2 = pointer_1 as *mut [u32]; 
 
-  // pointer_3 : (a raw pointer NOT built from a reference. It is built from another raw pointer)- we will build it slowly, observe the steps
+  // pointer_3 : (a raw pointer NOT built from a reference. It is built from another raw pointer)   
   // integer details --> This pointer points at the 0'th element address, ie. the base of the allocation
   // Provenance details
       //  set of affected addresses: [base, base+1, base+2, base+3, base+4]
-      //  validity lifetime : It lives as long as lifetime of the parent reference ie a lifetime of '1 just like pointer_1
+      //  validity lifetime : It lives as long as lifetime of the parent-pointer ie a lifetime of '1 just like pointer_2
       //  access rights : read-write each address
       let base_address = core::ptr::addr_of_mut!(x).addr(); // no reference involved in address instruction
       let pointer_3 = pointer_2.with_addr(base_address);
 
-  // pointer_4 : (a raw pointer NOT built from a reference. It is built from another raw pointer)- we will build it slowly, observe the steps
+  // pointer_4 : (a raw pointer NOT built from a reference. It is built from another raw pointer)
   // integer details --> This pointer points at the 0'th element address, ie. the base of the allocation
   // Provenance details
       //  set of affected addresses: [base, base+1, base+2, base+3, base+4]
@@ -76,11 +75,11 @@ fn main(){
       //  validity lifetime : It can live as long as lifetime of the parent reference ie a lifetime of less_or_equal '1 just like pointer_2
       //  access rights : read-write each address
       let base_address = core::ptr::addr_of_mut!(x).addr(); // no reference involved in address instruction
-      let address_of_second_element = core::ptr::addr_of_mut!(x[1]) as usize; // we could have done pointer arithmetic but I like this one
+      let address_of_second_element = core::ptr::addr_of_mut!(x[1]).addr(); // we could have done pointer arithmetic but I like this one
       let pointer_5 = pointer_2.with_addr(address_of_second_element);
 
   
-  // pointer_6 : (a raw pointer built from a reference BUT that reference is a slice)
+  // pointer_6 : (a raw pointer built from a reference BUT that reference is a mut slice)
   // So the spatial info in the provenance details changes
   // the integer details also change
   // integer details --> This pointer points at the 3rd element address, ie. the base+2
@@ -108,7 +107,7 @@ fn main(){
 
   
   // pointer_8 : (a raw pointer NOT built from a reference BUT from a parent-raw-pointer. There are 2 catches...
-  // ...1. that the Parent-raw-pointer was derived from a slice. Meaning it had a shrinked provenance beforehand
+  // ...1. that the Parent-raw-pointer was derived from a slice. Meaning it had a shrinked spatial provenance beforehand
   // ...2. We are shrinking the Mutability info in the Provenance details. The new pointer is a read-only pointer
   // So the spatial info in the provenance is unaffected
   // It's the Access Rights that change (Mutability Info)
@@ -153,7 +152,7 @@ let raw_address = 0x100;
 let my_raw_pointer_with_provenance = create_pointer (raw_address, provenance_instance_for_x);
 ```
 
-Why is it important to be able to define Provenance?  
+Why is it important to be able to define Provenance without the help of references?  
 Because there are times when you cannot create a reference, eg when dealing with MMIO  
 
 

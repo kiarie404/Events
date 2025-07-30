@@ -5,11 +5,14 @@ And that it is [hard to statically detect undefined behaviour](./bad_news.md#the
 
 
 ## Enter Miri
-If you can't yet solve something statically, then you can try doing it dynamically, using an interpreter. Right? [Miri](https://github.com/rust-lang/miri?tab=readme-ov-file) did just that.    
+If you can't yet solve something statically, then you can try doing it dynamically, using an interpreter. Right?  
+
+
+[Miri](https://github.com/rust-lang/miri?tab=readme-ov-file) did just that.    
 
 Miri is a Rust **interpreter** that dynamically checks for undefined behaviour and [other things](https://github.com/rust-lang/miri?tab=readme-ov-file) in our Rust code.  
 
-Miri employs these two independent methods of checking violation of aliasing rules :  
+Miri employs 👇these two independent methods of checking for aliasing-rules violations:  
 1. [Stack Borrows](https://plv.mpi-sws.org/rustbelt/stacked-borrows/)
 2. [Tree Borrows](https://perso.crans.org/vanille/treebor/)
 
