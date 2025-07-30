@@ -4,7 +4,7 @@ Pointers are not just integers. That is a wrong abstraction.
 If we treat pointers as integers, we get things wrong.  
 We need to define a type called 'Pointer' and another called 'Integer'. They may look and act similar in certain scenarios, but they are not usually the same.  
 
-I have a joke : I will treat pointers like true intergers
+I have a joke : I will treat pointers like true intergers for no reason at all.  
 ```rust
 fn main(){
     let x :u32 = 10; // create a value
@@ -19,7 +19,11 @@ fn main(){
         println!("new garbage value of x = {}", *x_ptr2);
     };
 }
-```
+```  
+
+That was not a joke btw, stuff like this happen in long pointer-arithmetic code, or in code that exploits pointer tagging.  
+The above situation has an obvious mistake that can be easily seen, but in real life, it won't be that easy to find deep in pointer-arithmetic jungles.  
+Life lesson: Pointer != integer.  
 
 
 Provenance is the attached metadata to a pointer type.  

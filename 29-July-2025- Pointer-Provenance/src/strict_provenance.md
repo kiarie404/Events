@@ -154,15 +154,7 @@ let my_raw_pointer_with_provenance = create_pointer (raw_address, provenance_ins
 ```
 
 Why is it important to be able to define Provenance?  
-Because there are times when you cannot create a reference, eg when dealing with MMIO
-
-
-# Exposed Provenance  
-
-There is a database stores exposed provenances and associated pointers. It is not a strict database. (Future me, just explain this verbally, I can't write now, pretty please)
-
-
-> there is no algorithm that decides which provenance will be used. You can think of this as “guessing” the right provenance, and the guess will be “maximally in your favor”, in the sense that if there is any way to avoid undefined behavior, then that is the guess that will be taken  
+Because there are times when you cannot create a reference, eg when dealing with MMIO  
 
 
 
