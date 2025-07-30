@@ -13,6 +13,8 @@
 - [Provenance](./provenance.md)
 - [Bad news](bad_news.md)
 - [Strict Provenance](strict_provenance.md)
+- [Exposed Provenance](exposed_provenance.md)
+- [Miri](./miri.md)
 - [Stacked Borrows](./stacked_borrows.md)
 - [Limitations of Stacked Borrows](limitations_of_stacked_borrows.md)
 - [Extra Explanations]()
